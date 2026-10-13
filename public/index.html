@@ -44,7 +44,7 @@
 <li><b>Pays off after</b>: messages until the bytes saved cover shipping the dictionary once. Matters when the dictionary has to travel to each reader.</li>
 <li><b>Pick</b>: the smallest dictionary within 2% of the best one. Bigger dictionaries cost memory on both ends and take longer to load.</li>
 <li>A dictionary is only as good as its samples. In my runs on GitHub events, a dictionary larger than about a quarter of the sample bytes did <em>worse</em> than a smaller one, and sizes like that are flagged here. Ten samples already helped a lot; the last few percent took thousands.</li>
-<li>Data drifts. A dictionary trained on yesterday's events lost about 4% of its ratio, a month-old one about 9%. Retrain on a schedule and keep the dictionary ID in the frame so old messages still decode.</li>
+<li>Data drifts. A dictionary trained on yesterday's events lost about 4% of its ratio, a month-old one about 9%. Retrain when the shape of your messages changes, and keep the dictionary ID in the frame so old messages still decode.</li>
 </ul>
 <p>The split into training and test messages is random but fixed, so the same input gives the same answer. With very few messages the test set is small and the numbers are noisy. The measurements behind the notes: <a href="https://wickkit.cc/posts/2026-10-13-a-zstd-dictionary-needs-fewer-samples-than-you-think.html">a zstd dictionary needs fewer samples than you think</a>.</p>
 </section>
