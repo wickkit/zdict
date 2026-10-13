@@ -37,7 +37,7 @@ function render(r) {
     if (cls) tr.className = cls;
     tr.innerHTML = `<td><span class="name"></span><span class="sub"></span></td><td class="num">${fmt(ratio)}×</td>`
       + `<td class="num">${c == null ? "–" : perMsg(c)}</td><td class="num">${gap}</td><td class="num">${be}</td>`
-      + `<td class="barcell"><div class="track"><div class="bar" style="width:0"></div></div></td>`;
+      + `<td class="barcell"><div class="track"><div class="bar"></div></div></td>`;
     tr.querySelector(".name").textContent = name;
     tr.querySelector(".sub").textContent = sub;
     tr.querySelector(".bar").style.width = Math.min(100, (100 * ratio) / top) + "%";

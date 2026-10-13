@@ -37,7 +37,7 @@ tr.warn td { font-size: .82rem; color: var(--warn); background: var(--warnbg); p
 .notes li { margin-bottom: .35rem; }
 footer { margin-top: 2.5rem; font-size: .85rem; color: var(--mute); }
 @media (max-width: 640px) {
-  .barcell, .bar-h, td.kind, th:nth-child(2) { display: none; }
+  .barcell, .bar-h, #t th:nth-child(4), #t td:nth-child(4) { display: none; }
   .kind-m { display: block; }
   table { font-size: .9rem; }
   td, th { padding-left: .3rem; padding-right: .3rem; }
