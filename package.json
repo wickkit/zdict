@@ -1,0 +1,9 @@
+{
+  "name": "zdict",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "sh wasm/build.sh",
+    "test": "node test/check.js"
+  }
+}

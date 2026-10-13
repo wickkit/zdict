@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Should I use a zstd dictionary? Test it on your own messages</title>
+<meta name="description" content="Paste or drop sample messages and see how much a trained zstd dictionary shrinks them when each is compressed on its own: ratio per dictionary size, break-even, and the dictionary to download. Runs libzstd in your browser.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<h1>Should I use a zstd dictionary?</h1>
+<p class="lede">Small messages compress badly on their own because each one starts from nothing. A trained dictionary gives every message the same head start. Paste a few hundred real messages (log lines, JSON events, API responses) and this page trains dictionaries of several sizes on most of them, then compresses the rest one at a time, with and without. It's libzstd 1.5.7 compiled to WebAssembly, running here in your browser.</p>
+
+<form id="f" autocomplete="off">
+  <label class="wide">Messages <textarea id="text" rows="9" spellcheck="false" placeholder='{"type":"PushEvent","repo":"a/b","ref":"refs/heads/main"}
+{"type":"WatchEvent","repo":"c/d","action":"started"}
+…one message per line'></textarea></label>
+  <label>Split on
+    <select id="split"><option value="line">each line</option><option value="blank">blank lines</option></select></label>
+  <label>Or files <input id="files" type="file" multiple title="One file is split like the text box; several files are one message each"></label>
+  <label>Level <select id="level"><option>1</option><option selected>3</option><option>9</option><option>19</option></select></label>
+  <button id="go" type="submit">Check</button>
+  <button id="ex" type="button" class="quiet">Try an example</button>
+</form>
+<p id="err" class="err" hidden></p>
+<p id="status" class="summary"></p>
+
+<div id="out" hidden>
+<p id="verdict" class="verdict"></p>
+<table id="t">
+  <thead><tr><th>Dictionary</th><th class="num">Ratio</th><th class="num">Bytes/msg</th><th class="num">Gap closed</th><th class="num">Pays off after</th><th class="bar-h"></th></tr></thead>
+  <tbody></tbody>
+</table>
+<p class="summary" id="foot"></p>
+<p><button id="dl" type="button">Download the picked dictionary</button> <span class="sub" id="dlname"></span></p>
+</div>
+
+<section class="notes">
+<h2>How to read it</h2>
+<ul>
+<li><b>Ratio</b>: original bytes over compressed bytes for the held-out messages, each compressed as its own frame (standard frame header included).</li>
+<li><b>Whole set as one stream</b>: all held-out messages concatenated and compressed together. That's roughly the ceiling: what you'd get if every message could see all the others. <b>Gap closed</b> is how much of the distance from no dictionary to that ceiling a dictionary covers.</li>
+<li><b>Pays off after</b>: messages until the bytes saved cover shipping the dictionary once. Matters when the dictionary has to travel to each reader.</li>
+<li><b>Pick</b>: the smallest dictionary within 2% of the best one. Bigger dictionaries cost memory on both ends and take longer to load.</li>
+<li>A dictionary is only as good as its samples. In my runs on GitHub events, a dictionary larger than about a quarter of the sample bytes did <em>worse</em> than a smaller one, and sizes like that are flagged here. Ten samples already helped a lot; the last few percent took thousands.</li>
+<li>Data drifts. A dictionary trained on yesterday's events lost about 4% of its ratio, a month-old one about 9%. Retrain on a schedule and keep the dictionary ID in the frame so old messages still decode.</li>
+</ul>
+<p>The split into training and test messages is random but fixed, so the same input gives the same answer. With very few messages the test set is small and the numbers are noisy. The measurements behind the notes: <a href="https://wickkit.cc/posts/2026-10-13-a-zstd-dictionary-needs-fewer-samples-than-you-think.html">a zstd dictionary needs fewer samples than you think</a>.</p>
+</section>
+<footer>Runs in your browser; nothing is sent anywhere. By <a href="https://wickkit.cc/">Kit Wickham</a>. <a href="https://github.com/wickkit/zdict">Source</a>.</footer>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
